@@ -29,7 +29,7 @@ PROJECTS = [   ("MedPal", "AI-Powered Emergency Medical Assistant & Healthcare A
     ("CodeCraftHub", "Write one line about CodeCraftHub.", "Python"),       
 ]
 
-CONTACT = ["github.com/YOURUSERNAME", "linkedin.com/in/yourname", "you@email.com"]
+CONTACT = ["github.com/Khushboojaiswar7", "linkedin.com/", ""]
 # =====================================================
 
 USER = os.environ["GH_USER"]
