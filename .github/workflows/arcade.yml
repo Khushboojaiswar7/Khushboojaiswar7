@@ -25,7 +25,7 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add arcade.svg
+          git add arcade.svg cards README.md
           git diff --staged --quiet || git commit -m "Update arcade card"
           git push
 
