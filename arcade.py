@@ -18,20 +18,22 @@ SKILLS = [            # (skill name, level 0-100)
     ("Git", 65),
 ]
 
-MAX_PROJECTS = 12
-PROJECTS = [          # (name, one-line description, tech used)
-    ("MedPal", "AI-Powered Emergency Medical Assistant & Healthcare Accessibility Platform.", "Python"),
+MAX_PROJECTS = 12     # how many repos to show (all public repos, newest first)
+
+# OPTIONAL: override the text of a project. Leave empty to use the
+# description and language from the repo itself.
+PROJECTS = [   ("MedPal", "AI-Powered Emergency Medical Assistant & Healthcare Accessibility Platform.", "Python"),
     ("SoulSpace-ai", "AI-Powered Reflective Journalling Research Platform.","Python . AI"), 
     ("Exoplanet-Detection-AI", "Write one line about this AI project.", "Python · ML"),
     ("DarkMirror", "Write one line about DarkMirror.", "Python"),
-    ("CodeCraftHub", "Write one line about CodeCraftHub.", "Python"),
+    ("CodeCraftHub", "Write one line about CodeCraftHub.", "Python"),       
 ]
 
-CONTACT = ["github.com/Khushboojaiswar7", "linkedin.com", ""]
+CONTACT = ["github.com/YOURUSERNAME", "linkedin.com/in/yourname", "you@email.com"]
 # =====================================================
 
 USER = os.environ["GH_USER"]
-TOKEN = os.environ["GH_PAT"]
+TOKEN = os.environ["GH_TOKEN"]
 
 QUERY = """
 query($login:String!){
@@ -41,7 +43,7 @@ query($login:String!){
     repositories(ownerAffiliations:OWNER,isFork:false,first:100,
                  orderBy:{field:STARGAZERS,direction:DESC}){
       totalCount
-      nodes{name stargazerCount primaryLanguage{name}}
+      nodes{name description pushedAt stargazerCount primaryLanguage{name}}
     }
     contributionsCollection{contributionCalendar{
       totalContributions
@@ -66,6 +68,18 @@ bio_lines = [escape(l) for l in textwrap.wrap(u["bio"] or "", 62)[:2]]
 repos = u["repositories"]["nodes"]
 stars = {r["name"].lower(): r["stargazerCount"] for r in repos}
 top = repos[:5]
+
+over = {p[0].lower(): p for p in PROJECTS}
+proj_src = sorted((r for r in repos if r["name"].lower() != USER.lower()),
+                  key=lambda r: r["pushedAt"] or "", reverse=True)[:MAX_PROJECTS]
+projects = []
+for r in proj_src:
+    k = r["name"].lower()
+    lang = r["primaryLanguage"]["name"] if r["primaryLanguage"] else "-"
+    if k in over:
+        projects.append((r["name"], over[k][1], over[k][2], r["stargazerCount"]))
+    else:
+        projects.append((r["name"], r["description"] or "No description yet.", lang, r["stargazerCount"]))
 
 weeks = u["contributionsCollection"]["contributionCalendar"]["weeks"][-26:]
 days = [d for w in weeks for d in w["contributionDays"]]
@@ -225,14 +239,14 @@ y += h + 20
 
 # ===== PROJECTS (MISSIONS) =====
 rowh = 84
-h = 56 + len(PROJECTS) * rowh
+h = 56 + len(projects) * rowh
 panel(y, h)
 a(f'<text x="55" y="{y+32}" font-size="16" fill="{GREEN}">MISSIONS  (PROJECTS)</text>')
-for i, (pn, pd, pt) in enumerate(PROJECTS):
+for i, (pn, pd, pt, pstars) in enumerate(projects):
     ry = y + 56 + i * rowh
     a(f'<rect x="50" y="{ry}" width="720" height="{rowh-10}" rx="8" fill="#111838"/>')
     a(f'<text x="66" y="{ry+24}" font-size="17" font-weight="bold" fill="{YELLOW}">{escape(pn.upper())[:34]}</text>')
-    a(f'<text x="752" y="{ry+24}" text-anchor="end" font-size="13" fill="{DIM}">★ {stars.get(pn.lower(), 0)}</text>')
+    a(f'<text x="752" y="{ry+24}" text-anchor="end" font-size="13" fill="{DIM}">★ {pstars}</text>')
     for k, line in enumerate(wrap(pd, 80, 2)):
         a(f'<text x="66" y="{ry+44+k*16}" font-size="12" fill="{TXT}">{line}</text>')
     a(f'<text x="66" y="{ry+68}" font-size="11" fill="{GREEN}">TECH: {escape(pt)}</text>')
@@ -264,4 +278,5 @@ head = (f'<svg xmlns="http://www.w3.org/2000/svg" width="820" height="{H}" viewB
         f'font-family="Courier New, monospace"><rect width="820" height="{H}" rx="16" fill="{BG}"/>')
 open("arcade.svg", "w").write(head + "\n".join(o) + "</svg>")
 print("arcade.svg written")
+
 
