@@ -31,7 +31,7 @@ CONTACT = ["github.com/Khushboojaiswar7", "linkedin.com", ""]
 # =====================================================
 
 USER = os.environ["GH_USER"]
-TOKEN = os.environ["GH_TOKEN"]
+TOKEN = os.environ["GH_PAT"]
 
 QUERY = """
 query($login:String!){
