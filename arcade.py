@@ -1,4 +1,5 @@
-import os, json, base64, random, textwrap, urllib.request
+import os, re, shutil, json, base64, random, textwrap, urllib.request
+from urllib.parse import quote
 from collections import Counter
 from datetime import date
 from xml.sax.saxutils import escape
@@ -18,18 +19,23 @@ SKILLS = [            # (skill name, level 0-100)
     ("Git", 65),
 ]
 
-MAX_PROJECTS = 12     # how many repos to show (all public repos, newest first)
+MAX_PROJECTS = 10     # how many repos to show (all public repos, newest first)
 
 # OPTIONAL: override the text of a project. Leave empty to use the
 # description and language from the repo itself.
-PROJECTS = [   ("MedPal", "AI-Powered Emergency Medical Assistant & Healthcare Accessibility Platform.", "Python"),
-    ("SoulSpace-ai", "AI-Powered Reflective Journalling Research Platform.","Python . AI"), 
-    ("Exoplanet-Detection-AI", "Write one line about this AI project.", "Python · ML"),
-    ("DarkMirror", "Write one line about DarkMirror.", "Python"),
-    ("CodeCraftHub", "Write one line about CodeCraftHub.", "Python"),       
+PROJECTS = [          # (repo name, one-line description, tech used)
+    ("MedPal", "AI-Powered Emergency Medical Assistant & Healthcare Accessibility Platform.", "Python · Flask"),
+    ("SoulSpace", "AI-Powered Reflective Journalling Research Platform.", "Python · Flask"),
+    ("DarkMirror", "DarkMirror: Explainable Cascading Detector for Conversational Dark Patterns.", "Python · ML"),
+    ("Exoplanet-detection-ai", "AI-Enabled Exoplanet Detection from Noisy Astronomical Light Curves.", ""),
+    ("EduAssist AI", "learning support system designed to provide personalized educational.", "Python"),
 ]
 
-CONTACT = ["github.com/Khushboojaiswar7", "linkedin.com/", ""]
+CONTACT = [          # (button text, link)
+    ("GitHub", "https://github.com/Khushboojaiswar7"),
+    ("LinkedIn", ""),
+    ("Email", ""),
+]
 # =====================================================
 
 USER = os.environ["GH_USER"]
@@ -237,20 +243,24 @@ for i, (sk, pct) in enumerate(SKILLS):
     a(f'<text x="765" y="{ry}" text-anchor="end" font-size="12" fill="{DIM}">{pct}%</text>')
 y += h + 20
 
-# ===== PROJECTS (MISSIONS) =====
-rowh = 84
-h = 56 + len(projects) * rowh
-panel(y, h)
-a(f'<text x="55" y="{y+32}" font-size="16" fill="{GREEN}">MISSIONS  (PROJECTS)</text>')
-for i, (pn, pd, pt, pstars) in enumerate(projects):
-    ry = y + 56 + i * rowh
-    a(f'<rect x="50" y="{ry}" width="720" height="{rowh-10}" rx="8" fill="#111838"/>')
-    a(f'<text x="66" y="{ry+24}" font-size="17" font-weight="bold" fill="{YELLOW}">{escape(pn.upper())[:34]}</text>')
-    a(f'<text x="752" y="{ry+24}" text-anchor="end" font-size="13" fill="{DIM}">★ {pstars}</text>')
+# ===== PROJECT CARDS (separate images, each one clickable) =====
+shutil.rmtree("cards", ignore_errors=True)
+os.makedirs("cards")
+card_html = []
+for pn, pd, pt, pstars in projects:
+    fn = re.sub(r"[^A-Za-z0-9_.-]", "_", pn)
+    c = ['<svg xmlns="http://www.w3.org/2000/svg" width="820" height="100" viewBox="0 0 820 100" font-family="Courier New, monospace">',
+         f'<rect width="820" height="100" fill="{BG}"/>',
+         f'<rect x="30" y="8" width="760" height="84" rx="12" fill="#111838" stroke="{EDGE}" stroke-width="3"/>',
+         f'<text x="50" y="34" font-size="17" font-weight="bold" fill="{YELLOW}">{escape(pn.upper())[:34]}</text>',
+         f'<text x="770" y="34" text-anchor="end" font-size="13" fill="{DIM}">★ {pstars}</text>']
     for k, line in enumerate(wrap(pd, 80, 2)):
-        a(f'<text x="66" y="{ry+44+k*16}" font-size="12" fill="{TXT}">{line}</text>')
-    a(f'<text x="66" y="{ry+68}" font-size="11" fill="{GREEN}">TECH: {escape(pt)}</text>')
-y += h + 20
+        c.append(f'<text x="50" y="{54+k*16}" font-size="12" fill="{TXT}">{line}</text>')
+    c.append(f'<text x="50" y="86" font-size="11" fill="{GREEN}">TECH: {escape(pt)}</text>')
+    c.append(f'<text x="770" y="86" text-anchor="end" font-size="11" fill="{YELLOW}">PRESS START ▶</text>')
+    c.append("</svg>")
+    open(f"cards/{fn}.svg", "w", encoding="utf-8").write("\n".join(c))
+    card_html.append(f'<a href="https://github.com/{USER}/{pn}"><img src="cards/{fn}.svg" alt="{escape(pn)}" width="820"></a>')
 
 # ===== LEVEL MAP =====
 panel(y, 120)
@@ -265,13 +275,21 @@ for lx, ly, label, val in [(470, y+46, "COMBO", f"{streak} days"),
     a(f'<text x="{lx}" y="{ly+20}" font-size="18" fill="{TXT}">{val}</text>')
 y += 140
 
-# ===== CONTACT =====
-h = 60 + len(CONTACT) * 24
-panel(y, h, edge=False)
-a(f'<text x="410" y="{y+36}" text-anchor="middle" font-size="22" fill="{YELLOW}">CONTINUE?</text>')
-for k, c in enumerate(CONTACT):
-    a(f'<text x="410" y="{y+68+k*24}" text-anchor="middle" font-size="14" fill="{TXT}">{escape(c)}</text>')
-y += h + 20
+# ===== CONTACT BUTTONS + README UPDATE =====
+LOGO = {"github": "github", "linkedin": "linkedin", "email": "gmail"}
+btns = []
+for label, url in CONTACT:
+    lg = LOGO.get(label.lower(), "")
+    img = f"https://img.shields.io/badge/{quote(label)}-3b82d6?style=for-the-badge" + (f"&logo={lg}&logoColor=white" if lg else "")
+    btns.append(f'<a href="{url}"><img src="{img}" alt="{escape(label)}"></a>')
+block = ("<!--MISSIONS-->\n<div align=\"center\">\n<h2>MISSIONS (click a card to open it)</h2>\n"
+         + "\n".join(card_html) + "\n<h2>CONTINUE?</h2>\n" + " ".join(btns) + "\n</div>\n<!--/MISSIONS-->")
+txt = open("README.md", encoding="utf-8").read() if os.path.exists("README.md") else "![Arcade](arcade.svg)\n"
+if "<!--MISSIONS-->" in txt and "<!--/MISSIONS-->" in txt:
+    txt = re.sub(r"<!--MISSIONS-->.*?<!--/MISSIONS-->", lambda m: block, txt, flags=re.S)
+else:
+    txt = txt.rstrip() + "\n\n" + block + "\n"
+open("README.md", "w", encoding="utf-8").write(txt)
 
 H = y
 head = (f'<svg xmlns="http://www.w3.org/2000/svg" width="820" height="{H}" viewBox="0 0 820 {H}" '
