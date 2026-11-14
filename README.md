@@ -1,4 +1,4 @@
-## Hi, I'm Khushboo
+## Hi, I'm Khushboo 👋
 
 ![Arcade](arcade.svg)
 
