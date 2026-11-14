@@ -24,17 +24,13 @@ MAX_PROJECTS = 10     # how many repos to show (all public repos, newest first)
 # OPTIONAL: override the text of a project. Leave empty to use the
 # description and language from the repo itself.
 PROJECTS = [          # (repo name, one-line description, tech used)
-    ("MedPal", "AI-Powered Emergency Medical Assistant & Healthcare Accessibility Platform.", "Python · Flask"),
-    ("SoulSpace", "AI-Powered Reflective Journalling Research Platform.", "Python · Flask"),
-    ("DarkMirror", "DarkMirror: Explainable Cascading Detector for Conversational Dark Patterns.", "Python · ML"),
-    ("Exoplanet-detection-ai", "AI-Enabled Exoplanet Detection from Noisy Astronomical Light Curves.", ""),
-    ("EduAssist AI", "learning support system designed to provide personalized educational.", "Python"),
+    # ("MedPal", "Your own one-line description.", "Python · Flask"),
 ]
 
 CONTACT = [          # (button text, link)
     ("GitHub", "https://github.com/Khushboojaiswar7"),
-    ("LinkedIn", ""),
-    ("Email", ""),
+    ("LinkedIn", "https://linkedin.com/in/yourname"),
+    ("Email", "mailto:you@email.com"),
 ]
 # =====================================================
 
