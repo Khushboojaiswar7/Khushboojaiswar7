@@ -18,14 +18,16 @@ SKILLS = [            # (skill name, level 0-100)
     ("Git", 65),
 ]
 
+MAX_PROJECTS = 12
 PROJECTS = [          # (name, one-line description, tech used)
-    ("MedPal", "Write one line about what MedPal does.", "Python"),
+    ("MedPal", "AI-Powered Emergency Medical Assistant & Healthcare Accessibility Platform.", "Python"),
+    ("SoulSpace-ai", "AI-Powered Reflective Journalling Research Platform.","Python . AI"), 
     ("Exoplanet-Detection-AI", "Write one line about this AI project.", "Python · ML"),
     ("DarkMirror", "Write one line about DarkMirror.", "Python"),
     ("CodeCraftHub", "Write one line about CodeCraftHub.", "Python"),
 ]
 
-CONTACT = ["github.com/YOURUSERNAME", "linkedin.com/in/yourname", "you@email.com"]
+CONTACT = ["github.com/Khushboojaiswar7", "linkedin.com", ""]
 # =====================================================
 
 USER = os.environ["GH_USER"]
