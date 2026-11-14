@@ -29,7 +29,7 @@ PROJECTS = [          # (repo name, one-line description, tech used)
 
 CONTACT = [          # (button text, link)
     ("GitHub", "https://github.com/Khushboojaiswar7"),
-    ("LinkedIn", "https://linkedin.com/in/yourname"),
+    ("LinkedIn", "https://linkedin.com/in/khushboo-jaiswar-742500374"),
     ("Email", "mailto:you@email.com"),
 ]
 # =====================================================
