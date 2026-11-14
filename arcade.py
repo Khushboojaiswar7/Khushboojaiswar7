@@ -3,6 +3,31 @@ from collections import Counter
 from datetime import date
 from xml.sax.saxutils import escape
 
+# =====================================================
+#  EDIT THIS BLOCK WITH YOUR OWN DETAILS
+# =====================================================
+ABOUT = ("Hi! I'm a developer who loves building AI and web projects. "
+         "I'm currently learning new tools every week and working on "
+         "projects that solve real problems.")
+
+SKILLS = [            # (skill name, level 0-100)
+    ("Python", 85),
+    ("JavaScript", 60),
+    ("HTML", 80),
+    ("CSS", 70),
+    ("Git", 65),
+]
+
+PROJECTS = [          # (name, one-line description, tech used)
+    ("MedPal", "Write one line about what MedPal does.", "Python"),
+    ("Exoplanet-Detection-AI", "Write one line about this AI project.", "Python · ML"),
+    ("DarkMirror", "Write one line about DarkMirror.", "Python"),
+    ("CodeCraftHub", "Write one line about CodeCraftHub.", "Python"),
+]
+
+CONTACT = ["github.com/YOURUSERNAME", "linkedin.com/in/yourname", "you@email.com"]
+# =====================================================
+
 USER = os.environ["GH_USER"]
 TOKEN = os.environ["GH_TOKEN"]
 
@@ -37,10 +62,8 @@ u = resp["data"]["user"]
 name = escape(u["name"] or USER)
 bio_lines = [escape(l) for l in textwrap.wrap(u["bio"] or "", 62)[:2]]
 repos = u["repositories"]["nodes"]
+stars = {r["name"].lower(): r["stargazerCount"] for r in repos}
 top = repos[:5]
-langs = Counter(r["primaryLanguage"]["name"] for r in repos if r["primaryLanguage"])
-ltotal = sum(langs.values()) or 1
-lang_rows = langs.most_common(5)
 
 weeks = u["contributionsCollection"]["contributionCalendar"]["weeks"][-26:]
 days = [d for w in weeks for d in w["contributionDays"]]
@@ -65,7 +88,6 @@ meta = " · ".join(x for x in [
     f'{u["followers"]["totalCount"]} followers',
     f'{u["repositories"]["totalCount"]} repositories'] if x)
 
-# avatar as tiny pixelated embedded image
 try:
     r = urllib.request.urlopen(u["avatarUrl"] + "&s=32")
     av = "data:%s;base64,%s" % (r.headers.get_content_type(), base64.b64encode(r.read()).decode())
@@ -78,8 +100,9 @@ TXT, DIM = "#e6e9ff", "#7a83b8"
 GREEN, YELLOW, BLUE, RED = "#3ddc84", "#ffd24a", "#3b82d6", "#ff5c5c"
 LC = {"Python": "#3776ab", "JavaScript": "#f7df1e", "TypeScript": "#3178c6",
       "HTML": "#e34c26", "CSS": "#563d7c", "Java": "#b07219", "C++": "#f34b7d",
-      "C": "#888888", "Vue": "#41b883", "Jupyter Notebook": "#da5b0b",
-      "Dart": "#00b4ab", "Go": "#00add8", "Rust": "#dea584", "Kotlin": "#a97bff"}
+      "C": "#888888", "Vue": "#41b883", "React": "#61dafb", "Git": "#f05032",
+      "SQL": "#e38c00", "MySQL": "#00758f", "Flask": "#9aa4c7", "Node": "#68a063",
+      "Jupyter Notebook": "#da5b0b", "Dart": "#00b4ab", "Go": "#00add8"}
 
 
 def level(n):
@@ -97,11 +120,12 @@ def badge(x, y, lang):
             f'font-weight="bold" fill="#0a0e27">{escape(lang[:2].upper())}</text>')
 
 
-H = 1180
+def wrap(text, width, maxlines):
+    return [escape(l) for l in textwrap.wrap(text, width)[:maxlines]]
+
+
 o = []
 a = o.append
-a(f'<svg xmlns="http://www.w3.org/2000/svg" width="820" height="{H}" viewBox="0 0 820 {H}" font-family="Courier New, monospace">')
-a(f'<rect width="820" height="{H}" rx="16" fill="{BG}"/>')
 
 # ===== ARCADE CABINET =====
 a(f'<rect x="150" y="20" width="520" height="56" rx="4" fill="{BLUE}"/>')
@@ -125,7 +149,6 @@ i = len(weekly) - 4
 sx = 180 + i * step + step / 2 - 2
 sy = 318 - (8 + (weekly[i] / mx) * 140) - 36
 a(f'<polygon points="{sx:.1f},{sy:.1f} {sx+8:.1f},{sy+16:.1f} {sx-8:.1f},{sy+16:.1f}" fill="#ffffff"/>')
-
 a('<polygon points="130,332 690,332 730,392 90,392" fill="#2a3170"/>')
 a(f'<circle cx="230" cy="350" r="8" fill="{RED}"/><circle cx="230" cy="374" r="12" fill="#111"/>')
 a(f'<text x="352" y="372" font-size="11" fill="{BLUE}">P1</text>')
@@ -139,63 +162,104 @@ a(f'<text x="410" y="420" text-anchor="middle" font-size="16" fill="{YELLOW}">IN
 a(f'<text x="410" y="434" text-anchor="middle" font-size="8" fill="{DIM}">github.com/{escape(USER)}</text>')
 a('<rect x="170" y="442" width="40" height="28" fill="#151a3a"/><rect x="610" y="442" width="40" height="28" fill="#151a3a"/>')
 
+y = 490
+
+
+def panel(y, h, edge=True):
+    s = f' stroke="{EDGE}" stroke-width="4"' if edge else ""
+    a(f'<rect x="30" y="{y}" width="760" height="{h}" rx="14" fill="{PANEL}"{s}/>')
+
+
 # ===== PLAYER CARD =====
-y0 = 490
-a(f'<rect x="30" y="{y0}" width="760" height="130" rx="14" fill="{PANEL}" stroke="{EDGE}" stroke-width="4"/>')
-a(f'<text x="55" y="{y0+28}" font-size="13" fill="{YELLOW}">PLAYER 1</text>')
-a(f'<text x="640" y="{y0+28}" text-anchor="end" font-size="13" fill="{RED}">INSERT COIN</text>')
-a(f'<text x="55" y="{y0+58}" font-size="24" font-weight="bold" fill="{TXT}">{name}</text>')
+panel(y, 130)
+a(f'<text x="55" y="{y+28}" font-size="13" fill="{YELLOW}">PLAYER 1</text>')
+a(f'<text x="640" y="{y+28}" text-anchor="end" font-size="13" fill="{RED}">INSERT COIN</text>')
+a(f'<text x="55" y="{y+58}" font-size="24" font-weight="bold" fill="{TXT}">{name}</text>')
 for k, line in enumerate(bio_lines):
-    a(f'<text x="55" y="{y0+80+k*18}" font-size="13" fill="{TXT}">{line}</text>')
-a(f'<text x="55" y="{y0+116}" font-size="11" fill="{DIM}">{meta}</text>')
-a(f'<rect x="662" y="{y0+16}" width="100" height="100" fill="none" stroke="#ffffff" stroke-width="3"/>')
+    a(f'<text x="55" y="{y+80+k*18}" font-size="13" fill="{TXT}">{line}</text>')
+a(f'<text x="55" y="{y+116}" font-size="11" fill="{DIM}">{meta}</text>')
+a(f'<rect x="662" y="{y+16}" width="100" height="100" fill="none" stroke="#ffffff" stroke-width="3"/>')
 if av:
-    a(f'<image href="{av}" x="666" y="{y0+20}" width="92" height="92" style="image-rendering:pixelated"/>')
+    a(f'<image href="{av}" x="666" y="{y+20}" width="92" height="92" style="image-rendering:pixelated"/>')
+y += 150
+
+# ===== ABOUT =====
+lines = wrap(ABOUT, 78, 5)
+h = 56 + len(lines) * 22
+panel(y, h, edge=False)
+a(f'<text x="55" y="{y+32}" font-size="16" fill="{GREEN}">ABOUT PLAYER</text>')
+for k, line in enumerate(lines):
+    a(f'<text x="55" y="{y+62+k*22}" font-size="14" fill="{TXT}">{line}</text>')
+y += h + 20
 
 # ===== HI-SCORES =====
-y0 = 640
-a(f'<rect x="30" y="{y0}" width="760" height="210" rx="14" fill="{PANEL}"/>')
-a(f'<text x="410" y="{y0+36}" text-anchor="middle" font-size="24" fill="{GREEN}">HI-SCORES</text>')
+h = 66 + len(top) * 28
+panel(y, h, edge=False)
+a(f'<text x="410" y="{y+36}" text-anchor="middle" font-size="24" fill="{GREEN}">HI-SCORES</text>')
 for i, r in enumerate(top):
-    y = y0 + 76 + i * 28
+    ry = y + 76 + i * 28
     lang = r["primaryLanguage"]["name"] if r["primaryLanguage"] else ""
-    a(f'<text x="190" y="{y}" font-size="18" fill="{DIM}">{i+1}</text>')
+    a(f'<text x="190" y="{ry}" font-size="18" fill="{DIM}">{i+1}</text>')
     if lang:
-        a(badge(222, y, lang))
-    a(f'<text x="252" y="{y}" font-size="18" fill="{TXT}">{escape(r["name"].upper())[:24]}</text>')
-    a(f'<text x="640" y="{y}" text-anchor="end" font-size="18" fill="{YELLOW}">{r["stargazerCount"]}</text>')
+        a(badge(222, ry, lang))
+    a(f'<text x="252" y="{ry}" font-size="18" fill="{TXT}">{escape(r["name"].upper())[:24]}</text>')
+    a(f'<text x="640" y="{ry}" text-anchor="end" font-size="18" fill="{YELLOW}">{r["stargazerCount"]}</text>')
+y += h + 20
 
-# ===== POWER-UPS =====
-y0 = 870
-a(f'<rect x="30" y="{y0}" width="760" height="150" rx="14" fill="{PANEL}" stroke="{EDGE}" stroke-width="4"/>')
-a(f'<text x="55" y="{y0+30}" font-size="13" fill="{TXT}">POWER-UPS</text>')
-for i, (l, c) in enumerate(lang_rows):
-    y = y0 + 62 + i * 22
-    pct = round(c * 100 / ltotal)
+# ===== POWER-UPS (SKILLS) =====
+h = 50 + len(SKILLS) * 24
+panel(y, h)
+a(f'<text x="55" y="{y+30}" font-size="13" fill="{TXT}">POWER-UPS  (SKILLS)</text>')
+for i, (sk, pct) in enumerate(SKILLS):
+    ry = y + 62 + i * 24
     filled = round(pct / 100 * 20)
-    col = LC.get(l, "#8892b0")
-    a(badge(55, y, l))
-    a(f'<text x="85" y="{y}" font-size="13" fill="{TXT}">{escape(l)[:14]}</text>')
+    col = LC.get(sk, BLUE)
+    a(badge(55, ry, sk))
+    a(f'<text x="85" y="{ry}" font-size="13" fill="{TXT}">{escape(sk)[:14]}</text>')
     for k in range(20):
-        a(f'<rect x="{250 + k*22}" y="{y-11}" width="16" height="12" fill="{col if k < filled else "#141a33"}"/>')
-    a(f'<text x="765" y="{y}" text-anchor="end" font-size="12" fill="{DIM}">{pct}%</text>')
+        a(f'<rect x="{250 + k*22}" y="{ry-11}" width="16" height="12" fill="{col if k < filled else "#141a33"}"/>')
+    a(f'<text x="765" y="{ry}" text-anchor="end" font-size="12" fill="{DIM}">{pct}%</text>')
+y += h + 20
+
+# ===== PROJECTS (MISSIONS) =====
+rowh = 84
+h = 56 + len(PROJECTS) * rowh
+panel(y, h)
+a(f'<text x="55" y="{y+32}" font-size="16" fill="{GREEN}">MISSIONS  (PROJECTS)</text>')
+for i, (pn, pd, pt) in enumerate(PROJECTS):
+    ry = y + 56 + i * rowh
+    a(f'<rect x="50" y="{ry}" width="720" height="{rowh-10}" rx="8" fill="#111838"/>')
+    a(f'<text x="66" y="{ry+24}" font-size="17" font-weight="bold" fill="{YELLOW}">{escape(pn.upper())[:34]}</text>')
+    a(f'<text x="752" y="{ry+24}" text-anchor="end" font-size="13" fill="{DIM}">★ {stars.get(pn.lower(), 0)}</text>')
+    for k, line in enumerate(wrap(pd, 80, 2)):
+        a(f'<text x="66" y="{ry+44+k*16}" font-size="12" fill="{TXT}">{line}</text>')
+    a(f'<text x="66" y="{ry+68}" font-size="11" fill="{GREEN}">TECH: {escape(pt)}</text>')
+y += h + 20
 
 # ===== LEVEL MAP =====
-y0 = 1040
-a(f'<rect x="30" y="{y0}" width="760" height="120" rx="14" fill="{PANEL}" stroke="{EDGE}" stroke-width="4"/>')
-a(f'<text x="55" y="{y0+28}" font-size="13" fill="{TXT}">LEVEL MAP  26 WEEKS</text>')
+panel(y, 120)
+a(f'<text x="55" y="{y+28}" font-size="13" fill="{TXT}">LEVEL MAP  26 WEEKS</text>')
 for wi, w in enumerate(weeks):
     for di, d in enumerate(w["contributionDays"]):
-        a(f'<rect x="{55 + wi*14}" y="{y0+40+di*10}" width="11" height="8" fill="{level(d["contributionCount"])}"/>')
-for lx, ly, label, val in [(470, y0+46, "COMBO", f"{streak} days"),
-                           (470, y0+86, "BEST COMBO", f"{best} days"),
-                           (620, y0+46, "SCORE (26 WEEKS)", f"{score:,}")]:
+        a(f'<rect x="{55 + wi*14}" y="{y+40+di*10}" width="11" height="8" fill="{level(d["contributionCount"])}"/>')
+for lx, ly, label, val in [(470, y+46, "COMBO", f"{streak} days"),
+                           (470, y+86, "BEST COMBO", f"{best} days"),
+                           (620, y+46, "SCORE (26 WEEKS)", f"{score:,}")]:
     a(f'<text x="{lx}" y="{ly}" font-size="10" fill="{DIM}">{label}</text>')
     a(f'<text x="{lx}" y="{ly+20}" font-size="18" fill="{TXT}">{val}</text>')
+y += 140
 
-a("</svg>")
-open("arcade.svg", "w").write("\n".join(o))
+# ===== CONTACT =====
+h = 60 + len(CONTACT) * 24
+panel(y, h, edge=False)
+a(f'<text x="410" y="{y+36}" text-anchor="middle" font-size="22" fill="{YELLOW}">CONTINUE?</text>')
+for k, c in enumerate(CONTACT):
+    a(f'<text x="410" y="{y+68+k*24}" text-anchor="middle" font-size="14" fill="{TXT}">{escape(c)}</text>')
+y += h + 20
+
+H = y
+head = (f'<svg xmlns="http://www.w3.org/2000/svg" width="820" height="{H}" viewBox="0 0 820 {H}" '
+        f'font-family="Courier New, monospace"><rect width="820" height="{H}" rx="16" fill="{BG}"/>')
+open("arcade.svg", "w").write(head + "\n".join(o) + "</svg>")
 print("arcade.svg written")
-
-
 
