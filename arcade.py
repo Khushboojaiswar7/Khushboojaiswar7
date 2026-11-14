@@ -11,7 +11,7 @@ query($login:String!){
   user(login:$login){
     name bio location
     followers{totalCount}
-    repositories(ownerAffiliation:OWNER,isFork:false,first:100,
+    repositories(ownerAffiliations:OWNER,isFork:false,first:100,
                  orderBy:{field:STARGAZERS,direction:DESC}){
       totalCount
       nodes{name stargazerCount primaryLanguage{name}}
