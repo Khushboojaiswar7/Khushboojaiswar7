@@ -19,7 +19,7 @@ jobs:
       - name: Generate SVG
         env:
           GH_USER: ${{ github.repository_owner }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: python arcade.py
       - name: Commit
         run: |
