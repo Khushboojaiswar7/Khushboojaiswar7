@@ -28,7 +28,10 @@ req = urllib.request.Request(
     data=json.dumps({"query": QUERY, "variables": {"login": USER}}).encode(),
     headers={"Authorization": f"bearer {TOKEN}"},
 )
-u = json.load(urllib.request.urlopen(req))["data"]["user"]
+resp = json.load(urllib.request.urlopen(req))
+if "data" not in resp:
+    raise SystemExit("API ERROR: " + json.dumps(resp))
+u = resp["data"]["user"]
 
 name = escape(u["name"] or USER)
 bio = escape((u["bio"] or "")[:70])
