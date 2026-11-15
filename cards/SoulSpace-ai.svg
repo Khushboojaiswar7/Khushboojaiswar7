@@ -2,7 +2,7 @@
 <rect width="820" height="100" fill="#05071a"/>
 <rect x="30" y="8" width="760" height="84" rx="12" fill="#111838" stroke="#232a5c" stroke-width="3"/>
 <text x="50" y="34" font-size="17" font-weight="bold" fill="#ffd24a">SOULSPACE-AI</text>
-<text x="770" y="34" text-anchor="end" font-size="13" fill="#7a83b8">★ 0</text>
+<text x="770" y="34" text-anchor="end" font-size="13" fill="#7a83b8">★ 1</text>
 <text x="50" y="54" font-size="12" fill="#e6e9ff">No description yet.</text>
 <text x="50" y="86" font-size="11" fill="#3ddc84">TECH: Python</text>
 <text x="770" y="86" text-anchor="end" font-size="11" fill="#ffd24a">PRESS START ▶</text>

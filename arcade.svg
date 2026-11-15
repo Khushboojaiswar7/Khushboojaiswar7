@@ -111,22 +111,22 @@
 <text x="410" y="818" text-anchor="middle" font-size="24" fill="#3ddc84">HI-SCORES</text>
 <text x="190" y="858" font-size="18" fill="#7a83b8">1</text>
 <rect x="222" y="846" width="20" height="15" rx="3" fill="#3776ab"/><text x="232" y="857" text-anchor="middle" font-size="9" font-weight="bold" fill="#0a0e27">PY</text>
-<text x="252" y="858" font-size="18" fill="#e6e9ff">MEDPAL</text>
+<text x="252" y="858" font-size="18" fill="#e6e9ff">SOULSPACE-AI</text>
 <text x="640" y="858" text-anchor="end" font-size="18" fill="#ffd24a">1</text>
 <text x="190" y="886" font-size="18" fill="#7a83b8">2</text>
 <rect x="222" y="874" width="20" height="15" rx="3" fill="#3776ab"/><text x="232" y="885" text-anchor="middle" font-size="9" font-weight="bold" fill="#0a0e27">PY</text>
-<text x="252" y="886" font-size="18" fill="#e6e9ff">KHUSHBOOJAISWAR7</text>
-<text x="640" y="886" text-anchor="end" font-size="18" fill="#ffd24a">0</text>
+<text x="252" y="886" font-size="18" fill="#e6e9ff">MEDPAL</text>
+<text x="640" y="886" text-anchor="end" font-size="18" fill="#ffd24a">1</text>
 <text x="190" y="914" font-size="18" fill="#7a83b8">3</text>
-<text x="252" y="914" font-size="18" fill="#e6e9ff">EXOPLANET-DETECTION-AI</text>
+<rect x="222" y="902" width="20" height="15" rx="3" fill="#3776ab"/><text x="232" y="913" text-anchor="middle" font-size="9" font-weight="bold" fill="#0a0e27">PY</text>
+<text x="252" y="914" font-size="18" fill="#e6e9ff">KHUSHBOOJAISWAR7</text>
 <text x="640" y="914" text-anchor="end" font-size="18" fill="#ffd24a">0</text>
 <text x="190" y="942" font-size="18" fill="#7a83b8">4</text>
-<rect x="222" y="930" width="20" height="15" rx="3" fill="#3776ab"/><text x="232" y="941" text-anchor="middle" font-size="9" font-weight="bold" fill="#0a0e27">PY</text>
-<text x="252" y="942" font-size="18" fill="#e6e9ff">DARKMIRROR</text>
+<text x="252" y="942" font-size="18" fill="#e6e9ff">EXOPLANET-DETECTION-AI</text>
 <text x="640" y="942" text-anchor="end" font-size="18" fill="#ffd24a">0</text>
 <text x="190" y="970" font-size="18" fill="#7a83b8">5</text>
 <rect x="222" y="958" width="20" height="15" rx="3" fill="#3776ab"/><text x="232" y="969" text-anchor="middle" font-size="9" font-weight="bold" fill="#0a0e27">PY</text>
-<text x="252" y="970" font-size="18" fill="#e6e9ff">CODECRAFTHUB</text>
+<text x="252" y="970" font-size="18" fill="#e6e9ff">DARKMIRROR</text>
 <text x="640" y="970" text-anchor="end" font-size="18" fill="#ffd24a">0</text>
 <rect x="30" y="1008" width="760" height="170" rx="14" fill="#0d1230" stroke="#232a5c" stroke-width="4"/>
 <text x="55" y="1038" font-size="13" fill="#e6e9ff">POWER-UPS  (SKILLS)</text>
